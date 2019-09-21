@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <% include ../partials/head %> 
+    </head>
+    <body>
+    <% include ../partials/header %> 
+    
+        <div>
+            <form id="login" action="/users/create" method="post">
+                <input type="text" name="email" placeholder="E-mail" id="email" >
+                <input type="text" name="username" placeholder="Username" id="username" >
+                <input type="password" name="password" placeholder="Password" id="password"  >
+                <input type="submit" value="REGISTER">
+            </form>
+		</div>
+
+    </body>
+</html>

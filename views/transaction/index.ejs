@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%include ../partials/head %>
+    <title>Transaction</title>
+</head>
+<body>
+    <%include ../partials/header %>
+    <div>
+        <form id="transaction" action="/transaction/create" method="post">
+            <input type="number" name="amount" placeholder="" id="amount" >
+
+            <select name="category" id="category">
+                <% categories.forEach(function (category) { %>
+                    <option label="<%= category.name %> " value="<%= category.name %>">
+                <% }) %>
+            </select>
+           
+            <input type="text" name="note" placeholder="note" id="note" >
+
+            <input type="date" name="date" placeholder="date" id="date" >
+
+            <!-- <input type="text" name="event" placeholder="event" id="event" > -->
+
+            <select name="event" id="event">
+                <% events.forEach(function (event) { %>
+                    <option label="<%= event.eventName %> " value="<%= event.id %>">
+                <% }) %>
+            </select>
+
+            <input type="date" name="remind" placeholder="remind" id="remind" >
+
+            <input type="text" name="photo" placeholder="photo" id="photo" >
+            
+            <input type="submit" value="REGISTER">
+        </form>
+    </div>
+</body>
+</html>
