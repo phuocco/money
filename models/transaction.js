@@ -12,7 +12,7 @@ const TransactionSchema = new mongoose.Schema({
   type: String,
   note: String,
   date: { type: Date, default: Date.now },
-  //timestamp: Number,
+  timestamp: Number,
   event: { type: Schema.Types.ObjectId, ref: 'Event' },
   remind: { type: Date },
   photo: String
