@@ -13,13 +13,13 @@ const TransactionSchema = new mongoose.Schema({
   note: String,
   date: { type: Date, default: Date.now },
   timestamp: Number,
-  event: { type: Schema.Types.ObjectId, ref: 'Event' },
+  event: { type: Schema.Types.String, ref: 'Event' },
   remind: { type: Date },
   photo: String
 },
   { timestamp: true }
 )
-//TransactionSchema.plugin(timestamps);
+TransactionSchema.plugin(timestamps);
 
 var Transaction = mongoose.model('Transaction', TransactionSchema);
 module.exports = Transaction;

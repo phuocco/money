@@ -17,7 +17,22 @@ router.get('/', async (req, res) => {
             }
         }
     ]).then(data => res.json(data)).catch(err => console.log(err));
+    //  Transaction.find().then(data => res.json(data)).catch(err => console.log(err));
 });
+
+//get by category
+router.get('/:category', async (req, res) => {
+    Transaction.aggregate([
+        {
+            $match:
+            {
+                category: req.body.category
+            }
+        }
+    ]).then(data => res.json(data)).catch(err => console.log(err));
+})
+
+
 // get plan
 router.get('/plan', async (req, res) => {
     var currentTime = Date.parse(new Date());
@@ -45,6 +60,11 @@ router.get('/index', async (req, res) => {
         })
     })
 });
+
+//get all
+router.get('/all', async (req, res) => {
+    Transaction.find().then(data => res.json(data)).catch(err => console.log(err))
+})
 
 //get this month
 router.get('/month', async (req, res) => {
@@ -78,9 +98,7 @@ router.get('/month', async (req, res) => {
         {
             $sort:
             {
-
                 date: 1
-
             }
         }
     ]).then(data => res.json(data)).catch(err => console.log(err))
@@ -111,35 +129,10 @@ router.post('/create/', async (req, res) => {
         res.json(newTransaction);
     }
     catch {
-        res.json("fail");
+        res.json(err => console.log(err));
     }
 });
 
 
-router.post('/create2/', async (req, res) => {
 
-    var timestamp = moment(req.body.date).format('MM-DD-YYYY');
-
-    const transaction = new Transaction({
-
-        user: req.session.email,
-        amount: req.body.amount,
-        category: req.body.category,
-        note: req.body.note,
-        date: req.body.date,
-        timestamp: timestamp,
-        event: req.body.event,
-        remind: req.body.remind,
-        photo: req.body.photo,
-    })
-    try {
-        const newTransaction = await transaction.save();
-        res.json(newTransaction);
-    }
-    catch {
-        res.json("fail");
-    }
-});
-
-
-module.exports = router
+module.exports = router;
