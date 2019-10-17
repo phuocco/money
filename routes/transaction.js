@@ -11,9 +11,9 @@ router.get('/', async (req, res) => {
     var currentTime = Date.parse(new Date());
     Transaction.aggregate([
         {
-            $match:
+            '$match':
             {
-                timestamp: { $lte: currentTime }
+                'timestamp': { '$lte': currentTime }
             }
         }
     ]).then(data => res.json(data)).catch(err => console.log(err));
@@ -24,11 +24,23 @@ router.get('/chart', async (req, res) => {
     var currentTime = Date.parse(new Date());
     Transaction.aggregate([
         {
-            $group:
-            {
-                _id: { category: "$category" },
-                averageQuantity: { $avg: "$amount" },
-                sum: { $sum: "$amount" }
+            '$group': {
+                '_id': {
+                    'category': '$category'
+                },
+                'averageQuantity': {
+                    '$avg': '$amount'
+                },
+                'sum': {
+                    '$sum': '$amount'
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$_id.category',
+                'sum': {
+                    '$first': '$sum'
+                }
             }
         }
     ]).then(data => res.json(data)).catch(err => console.log(err));
@@ -46,10 +58,7 @@ router.get('/plan', async (req, res) => {
         }
     ]).then(data => res.json(data)).catch(err => console.log(err));
 })
-//get id
-router.get('/:id', async (req, res) => {
-    Transaction.findById(req.params.id).then(data => res.json(data)).catch(err => this.console.log(err));
-})
+
 
 router.get('/index', async (req, res) => {
     Event.find({ user: req.session.email }, function (err, event) {
@@ -88,7 +97,7 @@ router.get('/month', async (req, res) => {
         {
             $match:
             {
-                month: 10
+                month: currentMonth
             }
         },
         {
@@ -99,7 +108,12 @@ router.get('/month', async (req, res) => {
         }
     ]).then(data => res.json(data)).catch(err => console.log(err))
 
-})
+});
+
+//get id
+router.get('/id/:id', async (req, res) => {
+    Transaction.findById(req.params.id).then(data => res.json(data)).catch(err => this.console.log(err));
+});
 
 router.post('/create/', async (req, res) => {
     var timestamp = Date.parse(req.body.date);
