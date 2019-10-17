@@ -17,9 +17,9 @@ const TransactionSchema = new mongoose.Schema({
   remind: { type: Date },
   photo: String
 },
-  { timestamp: true }
+  //{ timestamp: true }
 )
-TransactionSchema.plugin(timestamps);
+//TransactionSchema.plugin(timestamps);
 
 var Transaction = mongoose.model('Transaction', TransactionSchema);
 module.exports = Transaction;

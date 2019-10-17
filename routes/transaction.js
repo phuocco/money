@@ -116,7 +116,13 @@ router.get('/id/:id', async (req, res) => {
 });
 
 router.post('/create/', async (req, res) => {
-    var timestamp = Date.parse(req.body.date);
+    var timestamp;
+    if (req.body.date == null) {
+        timestamp = Date.now();
+
+    } else {
+        timestamp = Date.parse(req.body.date);
+    }
     var currentDate = new Date();
     var serverAmount = req.body.amount;
     if (req.body.type == "Expense") {
@@ -125,8 +131,8 @@ router.post('/create/', async (req, res) => {
     const transaction = new Transaction({
         email: req.body.email,
         amount: serverAmount,
-        type: req.body.type,
         category: req.body.category,
+        type: req.body.type,
         note: req.body.note,
         date: req.body.date,
         timestamp: timestamp,
@@ -139,7 +145,7 @@ router.post('/create/', async (req, res) => {
         res.json(newTransaction);
     }
     catch {
-        res.json("fail");
+        err => console.log(err)
     }
 });
 
