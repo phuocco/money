@@ -80,10 +80,7 @@ router.get('/chart1/', async (req, res) => {
     var month = parseInt(req.body.month);
     var year = parseInt(req.body.year);
 
-    const time = new Date();
-    //var tempMonth = time.getMonth();
-    var currentMonth = time.getMonth() + 1;
-    var currentYear = time.getFullYear();
+
 
 
     Transaction.aggregate(
