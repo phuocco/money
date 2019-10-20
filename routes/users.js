@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
   else {
     email = req.body.email;
     const token = await jwt.sign({ email }, 'PrivateKey');
-    res.json(token);
+    res.json(email);
     req.session.userId = user._id;
     req.session.email = user.email;
     // res.send(email);

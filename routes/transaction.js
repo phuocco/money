@@ -46,6 +46,9 @@ router.get('/chart', async (req, res) => {
     ]).then(data => res.json(data)).catch(err => console.log(err));
 });
 
+
+
+
 // get plan
 router.get('/plan', async (req, res) => {
     var currentTime = Date.parse(new Date());
@@ -70,6 +73,54 @@ router.get('/index', async (req, res) => {
         })
     })
 });
+
+
+//get chart by month,year
+router.get('/chart1/', async (req, res) => {
+    var month = parseInt(req.body.month);
+    var year = parseInt(req.body.year);
+
+    const time = new Date();
+    //var tempMonth = time.getMonth();
+    var currentMonth = time.getMonth() + 1;
+    var currentYear = time.getFullYear();
+
+
+    Transaction.aggregate(
+        [
+            {
+                '$project': {
+                    'year': {
+                        '$year': '$date'
+                    },
+                    'month': {
+                        '$month': '$date'
+                    },
+                    'email': 1,
+                    'amount': 1,
+                    'category': 1,
+                    'type': 1,
+                    'note': 1,
+                    'date': 1,
+                    'timestamp': 1,
+                    'remind': 1,
+                    'photo': 1
+                }
+            }, {
+                '$match': {
+                    'type': 'Expense',
+                    'month': month,
+                    'year': year,
+                }
+            }
+        ]
+    ).then(data => res.json(data)).catch(err => console.log(err));
+});
+
+//get all
+router.get('/all', async (req, res) => {
+    Transaction.find().then(data => res.json(data)).catch(err => console.log(err));
+})
 
 //get this month
 router.get('/month', async (req, res) => {
