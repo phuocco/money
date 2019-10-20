@@ -1,14 +1,14 @@
-var express = require('express');
-var router = express.Router();
-var Category = require('../models/category')
-var Transaction = require('../models/transaction');
-var User = require('../models/user');
-var Event = require('../models/event');
-var moment = require('moment');
+const express = require('express');
+const router = express.Router();
+const Category = require('../models/category')
+const Transaction = require('../models/transaction');
+const User = require('../models/user');
+const Event = require('../models/event');
+const moment = require('moment');
 
 //get all
-router.get('/', async (req, res) => {
-    var currentTime = Date.parse(new Date());
+router.get('/', (req, res) => {
+    let currentTime = Date.parse(new Date());
     Transaction.aggregate([
         {
             '$match':
@@ -20,8 +20,8 @@ router.get('/', async (req, res) => {
 });
 
 //get chart
-router.get('/chart', async (req, res) => {
-    var currentTime = Date.parse(new Date());
+router.get('/chart', (req, res) => {
+    let currentTime = Date.parse(new Date());
     Transaction.aggregate([
         {
             '$group': {
@@ -50,8 +50,8 @@ router.get('/chart', async (req, res) => {
 
 
 // get plan
-router.get('/plan', async (req, res) => {
-    var currentTime = Date.parse(new Date());
+router.get('/plan', (req, res) => {
+    let currentTime = Date.parse(new Date());
     Transaction.aggregate([
         {
             $match:
@@ -64,7 +64,7 @@ router.get('/plan', async (req, res) => {
 
 
 router.get('/index', async (req, res) => {
-    Event.find({ user: req.session.email }, function (err, event) {
+    await Event.find({ user: req.session.email }, function (err, event) {
         Category.find({}, function (err, data) {
             res.render('../views/transaction/index.ejs', {
                 categories: data,
@@ -76,6 +76,7 @@ router.get('/index', async (req, res) => {
 
 
 //get chart by month,year
+<<<<<<< HEAD
 router.get('/chart1/', async (req, res) => {
     var month = parseInt(req.body.month);
     var year = parseInt(req.body.year);
@@ -112,19 +113,72 @@ router.get('/chart1/', async (req, res) => {
             }
         ]
     ).then(data => res.json(data)).catch(err => console.log(err));
+=======
+router.get('/chart1', (req, res) => {
+    let month = parseInt(req.body.month);
+    let year = parseInt(req.body.year);
+    console.log('month: ' + month);
+    console.log('year: ' + year);
+
+    let time = new Date();
+    //let tempMonth = time.getMonth();
+    let currentMonth = time.getMonth() + 1;
+    let currentYear = time.getFullYear();
+    console.log('current Month: ' + currentMonth);
+    console.log('current Year: ' + currentYear);
+    if (!month || !year) {
+        month = currentMonth;
+        year = currentYear;
+    }
+    console.log(month + " " + year);
+
+
+
+
+
+    // Transaction.aggregate(
+    //     [
+    //         {
+    //             '$project': {
+    //                 'year': {
+    //                     '$year': '$date'
+    //                 },
+    //                 'month': {
+    //                     '$month': '$date'
+    //                 },
+    //                 'email': 1,
+    //                 'amount': 1,
+    //                 'category': 1,
+    //                 'type': 1,
+    //                 'note': 1,
+    //                 'date': 1,
+    //                 'timestamp': 1,
+    //                 'remind': 1,
+    //                 'photo': 1
+    //             }
+    //         }, {
+    //             '$match': {
+    //                 'type': 'Expense',
+    //                 'month': month,
+    //                 'year': year,
+    //             }
+    //         }
+    //     ]
+    // ).then(data => res.json(data)).catch(err => console.log(err));
+>>>>>>> 31f481e5a8e73645e52ef36b141e3a3fbb4fc128
 });
 
 //get all
 router.get('/all', async (req, res) => {
-    Transaction.find().then(data => res.json(data)).catch(err => console.log(err));
+    await Transaction.find().then(data => res.json(data)).catch(err => console.log(err));
 })
 
 //get this month
-router.get('/month', async (req, res) => {
+router.get('/month', (req, res) => {
     const time = new Date();
-    var tempMonth = time.getMonth();
-    var currentMonth = tempMonth + 1;
-    var currentYear = JSON.stringify(time.getFullYear());
+    let tempMonth = time.getMonth();
+    let currentMonth = tempMonth + 1;
+    let currentYear = JSON.stringify(time.getFullYear());
     Transaction.aggregate([
         {
             $project:
@@ -164,15 +218,15 @@ router.get('/id/:id', async (req, res) => {
 });
 
 router.post('/create/', async (req, res) => {
-    var timestamp;
+    let timestamp;
     if (req.body.date == null) {
         timestamp = Date.now();
 
     } else {
         timestamp = Date.parse(req.body.date);
     }
-    var currentDate = new Date();
-    var serverAmount = req.body.amount;
+    let currentDate = new Date();
+    let serverAmount = req.body.amount;
     if (req.body.type == "Expense") {
         serverAmount = 0 - serverAmount;
     }
@@ -200,7 +254,7 @@ router.post('/create/', async (req, res) => {
 
 router.post('/create2/', async (req, res) => {
 
-    var timestamp = moment(req.body.date).format('MM-DD-YYYY');
+    let timestamp = moment(req.body.date).format('MM-DD-YYYY');
 
     const transaction = new Transaction({
 
