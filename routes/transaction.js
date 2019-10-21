@@ -76,12 +76,23 @@ router.get('/index', async (req, res) => {
 
 
 //get chart by month,year
-<<<<<<< HEAD
-router.get('/chart1/', async (req, res) => {
-    var month = parseInt(req.body.month);
-    var year = parseInt(req.body.year);
+router.post('/chart1/', (req, res) => {
+    let month = parseInt(req.body.month);
+    let year = parseInt(req.body.year);
+    console.log('month: ' + month);
+    console.log('year: ' + year);
 
-
+    let time = new Date();
+    //let tempMonth = time.getMonth();
+    let currentMonth = time.getMonth() + 1;
+    let currentYear = time.getFullYear();
+    console.log('current Month: ' + currentMonth);
+    console.log('current Year: ' + currentYear);
+    if (!month || !year) {
+        month = currentMonth;
+        year = currentYear;
+    }
+    console.log(month + " " + year);
 
 
     Transaction.aggregate(
@@ -110,62 +121,29 @@ router.get('/chart1/', async (req, res) => {
                     'month': month,
                     'year': year,
                 }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'category': '$category'
+                    },
+                    'averageQuantity': {
+                        '$avg': '$amount'
+                    },
+                    'sum': {
+                        '$sum': '$amount'
+                    }
+                }
+            }, {
+                '$group': {
+                    '_id': '$_id.category',
+                    'sum': {
+                        '$first': '$sum'
+                    }
+                }
             }
         ]
     ).then(data => res.json(data)).catch(err => console.log(err));
-=======
-router.get('/chart1', (req, res) => {
-    let month = parseInt(req.body.month);
-    let year = parseInt(req.body.year);
-    console.log('month: ' + month);
-    console.log('year: ' + year);
-
-    let time = new Date();
-    //let tempMonth = time.getMonth();
-    let currentMonth = time.getMonth() + 1;
-    let currentYear = time.getFullYear();
-    console.log('current Month: ' + currentMonth);
-    console.log('current Year: ' + currentYear);
-    if (!month || !year) {
-        month = currentMonth;
-        year = currentYear;
-    }
-    console.log(month + " " + year);
-
-
-
-
-
-    // Transaction.aggregate(
-    //     [
-    //         {
-    //             '$project': {
-    //                 'year': {
-    //                     '$year': '$date'
-    //                 },
-    //                 'month': {
-    //                     '$month': '$date'
-    //                 },
-    //                 'email': 1,
-    //                 'amount': 1,
-    //                 'category': 1,
-    //                 'type': 1,
-    //                 'note': 1,
-    //                 'date': 1,
-    //                 'timestamp': 1,
-    //                 'remind': 1,
-    //                 'photo': 1
-    //             }
-    //         }, {
-    //             '$match': {
-    //                 'type': 'Expense',
-    //                 'month': month,
-    //                 'year': year,
-    //             }
-    //         }
-    //     ]
-    // ).then(data => res.json(data)).catch(err => console.log(err));
->>>>>>> 31f481e5a8e73645e52ef36b141e3a3fbb4fc128
 });
 
 //get all
