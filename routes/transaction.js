@@ -129,7 +129,29 @@ router.get('/chart', (req, res) => {
 });
 
 
-// get plan
+// get category
+//TODO: done
+router.get('/category', (req, res) => {
+    let currentTime = Date.parse(new Date());
+    let email = req.body.reqEmail;
+    let category = req.body.category;
+    Transaction.aggregate([
+        {
+            '$match':
+            {
+                'timestamp': { '$lte': currentTime },
+                'email': email,
+                'category': category
+            },
+        }, {
+            '$sort': {
+                'date': 1
+            }
+        }
+    ]).then(data => res.json(data)).catch(err => console.log(err));
+})
+
+// query by cate
 //TODO: email
 router.get('/plan', (req, res) => {
     let currentTime = Date.parse(new Date());
@@ -146,7 +168,6 @@ router.get('/plan', (req, res) => {
         }
     ]).then(data => res.json(data)).catch(err => console.log(err));
 })
-
 
 router.get('/index', async (req, res) => {
     await Event.find({ user: req.session.email }, function (err, event) {
