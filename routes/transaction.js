@@ -135,9 +135,13 @@ router.get('/plan', (req, res) => {
     let currentTime = Date.parse(new Date());
     Transaction.aggregate([
         {
-            $match:
+            '$match':
             {
-                timestamp: { $gte: currentTime }
+                'timestamp': { '$gte': currentTime }
+            },
+        }, {
+            '$sort': {
+                'date': 1
             }
         }
     ]).then(data => res.json(data)).catch(err => console.log(err));
