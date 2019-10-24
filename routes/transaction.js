@@ -345,10 +345,87 @@ router.get('/month', (req, res) => {
 
 });
 
+//sum ex by month
+router.post('/sumEx', (req, res) => {
+
+    let time = new Date();
+    let month = parseInt(req.body.month);
+    let year = parseInt(req.body.year);
+    let currentMonth = time.getMonth() + 1;
+    let currentYear = time.getFullYear();
+    let email = req.body.reqEmail;
+
+    if (!month || !year) {
+        month = currentMonth - 1;
+        year = currentYear;
+    }
+    console.log(month + " " + year + " " + email);
+
+    Transaction.aggregate(
+        [
+            {
+                '$project': {
+                    'month': {
+                        '$month': '$date'
+                    },
+                    'year': {
+                        '$year': '$date'
+                    },
+                    'amount': 1,
+                    'type': 1,
+                    'date': 1,
+                    'email': 1
+                }
+            }, {
+                '$match': {
+                    'type': 'Expense',
+                    'month': month,
+                    'year': year,
+                    'email': email
+                }
+            }, {
+                '$group': {
+                    '_id': {
+                        'month': '$month',
+                        'year': '$year'
+                    },
+                    'total': {
+                        '$sum': '$amount'
+                    }
+                }
+            }
+        ]
+    ).then(data => res.json(data)).catch(err => console.log(err));
+})
+
 //get id
 router.get('/id/:id', async (req, res) => {
     Transaction.findById(req.params.id).then(data => res.json(data)).catch(err => this.console.log(err));
 });
+
+//delete
+router.delete('/id/delete/:id', (req, res) => {
+    Transaction.findByIdAndDelete(req.params.id).then(res.json(success)).catch(err => console.log(err));
+})
+
+//update
+router.put('/id/update/:id', (req, res) => {
+    let id = req.params.id;
+
+
+
+    let transaction;
+    transaction = Transaction.findById(req.params.id)
+    transaction.amount = req.body.amount;
+    transaction.category = req.body.category;
+    transaction.note = req.body.note;
+    transaction.date = req.body.date;
+    transaction.timestamp = Date.parse(req.body.date);
+    transaction.photo = req.body.photo;
+    transaction.save();
+    Transaction.findOneAndUpdate({ _id: id }, req.body, { new: true }).then(res.json(success)).catch(err => console.log(err));
+
+})
 
 router.post('/create/', async (req, res) => {
     let timestamp;
