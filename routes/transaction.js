@@ -9,7 +9,6 @@ const moment = require('moment');
 //get all sort time by now this month
 router.post('/', (req, res) => {
     let time = new Date();
-
     let currentTime = Date.parse(new Date());
     let email = req.body.reqEmail;
     let currentMonth = time.getMonth() + 1;
@@ -32,7 +31,8 @@ router.post('/', (req, res) => {
                 'event': 1,
                 'remind': 1,
                 'photo': 1,
-                'timestamp': 1
+                'timestamp': 1,
+                'type': 1
             }
         }, {
             '$match': {
@@ -92,6 +92,48 @@ router.post('/email/', (req, res) => {
                 'month': month,
                 'year': year,
 
+            }
+        }, {
+            '$sort': {
+                'date': -1
+            }
+        }
+    ]).then(data => res.json(data)).catch(err => console.log(err));
+});
+
+//get all before time
+router.post('/getAll', (req, res) => {
+    let time = new Date();
+    let currentTime = Date.parse(new Date());
+    let email = req.body.reqEmail;
+
+    Transaction.aggregate([
+        {
+            '$project': {
+                'month': {
+                    '$month': '$date'
+                },
+                'year': {
+                    '$year': '$date'
+                },
+                'amount': 1,
+                'email': 1,
+                'user': 1,
+                'category': 1,
+                'note': 1,
+                'date': 1,
+                'event': 1,
+                'remind': 1,
+                'photo': 1,
+                'timestamp': 1,
+                'type': 1
+            }
+        }, {
+            '$match': {
+                'email': email,
+                'timestamp': {
+                    '$lte': currentTime
+                }
             }
         }, {
             '$sort': {
@@ -301,7 +343,6 @@ router.get('/selectMonth', (req, res) => {
 
 //get this month
 //TODO: email
-
 router.get('/month', (req, res) => {
     const time = new Date();
     let currentTime = Date.parse(new Date());
@@ -345,58 +386,8 @@ router.get('/month', (req, res) => {
 
 });
 
-//sum ex by month
-router.post('/sumEx', (req, res) => {
 
-    let time = new Date();
-    let month = parseInt(req.body.month);
-    let year = parseInt(req.body.year);
-    let currentMonth = time.getMonth() + 1;
-    let currentYear = time.getFullYear();
-    let email = req.body.reqEmail;
 
-    if (!month || !year) {
-        month = currentMonth - 1;
-        year = currentYear;
-    }
-    console.log(month + " " + year + " " + email);
-
-    Transaction.aggregate(
-        [
-            {
-                '$project': {
-                    'month': {
-                        '$month': '$date'
-                    },
-                    'year': {
-                        '$year': '$date'
-                    },
-                    'amount': 1,
-                    'type': 1,
-                    'date': 1,
-                    'email': 1
-                }
-            }, {
-                '$match': {
-                    'type': 'Expense',
-                    'month': month,
-                    'year': year,
-                    'email': email
-                }
-            }, {
-                '$group': {
-                    '_id': {
-                        'month': '$month',
-                        'year': '$year'
-                    },
-                    'total': {
-                        '$sum': '$amount'
-                    }
-                }
-            }
-        ]
-    ).then(data => res.json(data)).catch(err => console.log(err));
-})
 
 //get id
 router.get('/id/:id', async (req, res) => {
