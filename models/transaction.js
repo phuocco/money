@@ -5,7 +5,7 @@ var timestamps = require('mongoose-timestamp');
 
 const TransactionSchema = new mongoose.Schema({
   //  user: {type: Schema.Types.ObjectId, ref: 'User'},
-  //  user: { type: Schema.Types.String, ref: 'User' },
+  //_id:{type: mongoose.Types.ObjectId},
   email: String,
   amount: { type: Number, require: true },
   category: { type: String },

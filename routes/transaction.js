@@ -400,22 +400,22 @@ router.delete('/id/delete/:id', (req, res) => {
 })
 
 //update
-router.put('/id/update/:id', (req, res) => {
+router.put('/id/update/:id', (req, res,next) => {
     let id = req.params.id;
+    let serverAmount = req.body.amount;
+    if (req.body.type == "Expense") {
+        serverAmount = 0 - serverAmount;
+    }
+    const updateTrans = {amount: serverAmount,
+        category : req.body.category,
+        note : req.body.note,
+        date : req.body.date,
+        timestamp : Date.parse(req.body.date),
+        photo : req.body.photo
+    };
 
-
-
-    let transaction;
-    transaction = Transaction.findById(req.params.id)
-    transaction.amount = req.body.amount;
-    transaction.category = req.body.category;
-    transaction.note = req.body.note;
-    transaction.date = req.body.date;
-    transaction.timestamp = Date.parse(req.body.date);
-    transaction.photo = req.body.photo;
-    transaction.save();
-    Transaction.findOneAndUpdate({ _id: id }, req.body, { new: true }).then(res.json(success)).catch(err => console.log(err));
-
+    Transaction.updateOne({_id:id},{$set:updateTrans}).then(data => res.send("success")).catch(err => console.log(err));
+   
 })
 
 router.post('/create/', async (req, res) => {
