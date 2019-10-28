@@ -403,18 +403,19 @@ router.delete('/id/delete/:id', (req, res) => {
 router.put('/id/update/:id', (req, res,next) => {
     let id = req.params.id;
     let serverAmount = req.body.amount;
-    if (req.body.type == "Expense") {
+    if (req.body.type === "Expense" && req.body.amount > 0) {
         serverAmount = 0 - serverAmount;
     }
-    const updateTrans = {amount: serverAmount,
+    const updateTrans = {
+        amount: serverAmount,
         category : req.body.category,
         note : req.body.note,
         date : req.body.date,
         timestamp : Date.parse(req.body.date),
-        photo : req.body.photo
+        //photo : req.body.photo
     };
 
-    Transaction.updateOne({_id:id},{$set:updateTrans}).then(data => res.send("success")).catch(err => console.log(err));
+    Transaction.updateOne({_id:id},{$set:updateTrans}).then(timestamp => res.json("success")).catch(err => console.log(err));
    
 })
 
