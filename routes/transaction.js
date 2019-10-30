@@ -396,7 +396,7 @@ router.get('/id/:id', async (req, res) => {
 
 //delete
 router.delete('/id/delete/:id', (req, res) => {
-    Transaction.findByIdAndDelete(req.params.id).then(res.json(success)).catch(err => console.log(err));
+    Transaction.findByIdAndDelete(req.params.id).then(res.json("success")).catch(err => console.log(err));
 })
 
 //update
