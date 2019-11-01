@@ -51,6 +51,45 @@ router.post('/', (req, res) => {
     ]).then(data => res.json(data)).catch(err => console.log(err));
 });
 
+//get all before time
+router.post('/getAll', (req, res) => {
+    let time = new Date();
+    let currentTime = Date.parse(new Date());
+    let email = req.body.reqEmail;
+
+    Transaction.aggregate([
+        {
+            '$project': {
+                
+                'amount': 1,
+                'email': 1,
+                'user': 1,
+                'category': 1,
+                'note': 1,
+                'date': 1,
+                'event': 1,
+                'remind': 1,
+                'photo': 1,
+                'timestamp': 1,
+                'type': 1
+            }
+        }, {
+            '$match': {
+                'email': email,
+                'timestamp': {
+                    '$lte': currentTime
+                }
+            }
+        }, {
+            '$sort': {
+                'date': -1
+            }
+        }
+    ]).then(data => res.json(data)).catch(err => console.log(err));
+});
+
+
+
 //get all by email
 //TODO: email done
 router.post('/email/', (req, res) => {
@@ -84,7 +123,9 @@ router.post('/email/', (req, res) => {
                 'event': 1,
                 'remind': 1,
                 'photo': 1,
-                'timestamp': 1
+                'timestamp': 1,
+                'type': 1
+
             }
         }, {
             '$match': {
@@ -101,47 +142,7 @@ router.post('/email/', (req, res) => {
     ]).then(data => res.json(data)).catch(err => console.log(err));
 });
 
-//get all before time
-router.post('/getAll', (req, res) => {
-    let time = new Date();
-    let currentTime = Date.parse(new Date());
-    let email = req.body.reqEmail;
 
-    Transaction.aggregate([
-        {
-            '$project': {
-                'month': {
-                    '$month': '$date'
-                },
-                'year': {
-                    '$year': '$date'
-                },
-                'amount': 1,
-                'email': 1,
-                'user': 1,
-                'category': 1,
-                'note': 1,
-                'date': 1,
-                'event': 1,
-                'remind': 1,
-                'photo': 1,
-                'timestamp': 1,
-                'type': 1
-            }
-        }, {
-            '$match': {
-                'email': email,
-                'timestamp': {
-                    '$lte': currentTime
-                }
-            }
-        }, {
-            '$sort': {
-                'date': -1
-            }
-        }
-    ]).then(data => res.json(data)).catch(err => console.log(err));
-});
 
 //get chart
 router.get('/chart', (req, res) => {
@@ -396,7 +397,7 @@ router.get('/id/:id', async (req, res) => {
 
 //delete
 router.delete('/id/delete/:id', (req, res) => {
-    Transaction.findByIdAndDelete(req.params.id).then(res.json("success")).catch(err => console.log(err));
+    Transaction.findByIdAndDelete(req.params.id).then(data => res.json(data)).catch(err => console.log(err));
 })
 
 //update
