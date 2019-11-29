@@ -47,7 +47,7 @@ router.post("/", (req, res) => {
     },
     {
       $sort: {
-        date: -1
+        timestamp: -1
       }
     }
   ])
@@ -62,16 +62,29 @@ router.post("/range", (req, res) => {
   let endTime = req.body.endTime;
   let currentTime = Date.parse(new Date());
   let email = req.body.reqEmail;
+  console.log(startTime + " " + endTime);
+
   Transaction.aggregate([
     {
       $match: {
         email: email,
-        timestamp: {
-          $lte: parseInt(endTime)
-        },
-        timestamp: {
-          $gt: parseInt(startTime)
-        }
+        $and: [
+          {
+            timestamp: {
+              $lte: parseInt(endTime)
+            }
+          },
+          {
+            timestamp: {
+              $gte: parseInt(startTime)
+            }
+          }
+        ]
+      }
+    },
+    {
+      $sort: {
+        timestamp: -1
       }
     }
   ])
