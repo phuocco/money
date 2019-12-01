@@ -5,6 +5,7 @@ const Transaction = require("../models/transaction");
 const User = require("../models/user");
 const Event = require("../models/event");
 const moment = require("moment");
+const fetch = require("node-fetch");
 
 //get all sort time by now this month
 router.post("/", (req, res) => {
@@ -242,11 +243,34 @@ router.get("/category", (req, res) => {
 
 // query by cate
 //TODO: email
-router.get("/plan", (req, res) => {
+router.post("/plan", (req, res) => {
   let currentTime = Date.parse(new Date());
+  let email = req.body.reqEmail;
   Transaction.aggregate([
     {
+      $project: {
+        month: {
+          $month: "$date"
+        },
+        year: {
+          $year: "$date"
+        },
+        amount: 1,
+        email: 1,
+        user: 1,
+        category: 1,
+        note: 1,
+        date: 1,
+        event: 1,
+        remind: 1,
+        photo: 1,
+        timestamp: 1,
+        type: 1
+      }
+    },
+    {
       $match: {
+        email: email,
         timestamp: { $gte: currentTime }
       }
     },
@@ -481,12 +505,16 @@ router.put("/id/update/:id", (req, res, next) => {
 
 router.post("/create/", async (req, res) => {
   let timestamp;
+  let dateHCM;
   if (req.body.date == null) {
     timestamp = Date.now();
   } else {
     timestamp = Date.parse(req.body.date);
+    // var time = moment(req.body.date);
+    // time.tz("Asia/Ho_Chi_Minh").format("ha z");
+    // var timeHCM = moment.tz(req.body.date, "Asia/Ho_Chi_Minh");
+    dateHCM = moment.parseZone(req.body.date);
   }
-  let currentDate = new Date();
   let serverAmount = req.body.amount;
   if (req.body.type == "Expense") {
     serverAmount = 0 - serverAmount;
@@ -497,7 +525,7 @@ router.post("/create/", async (req, res) => {
     category: req.body.category,
     type: req.body.type,
     note: req.body.note,
-    date: req.body.date,
+    date: dateHCM,
     timestamp: timestamp,
     event: req.body.event,
     remind: req.body.remind,
@@ -509,6 +537,17 @@ router.post("/create/", async (req, res) => {
   } catch {
     err => console.log(err);
   }
+});
+
+router.get("/rate", async (req, res) => {
+  let url =
+    "http://apilayer.net/api/live?access_key=5744672fb1d88918baec0123ddd0ed50&currencies=VND&source=USD&format=1";
+  await fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      res.json(data.quotes);
+    })
+    .catch(err => console.log(err));
 });
 
 module.exports = router;
