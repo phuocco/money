@@ -46,22 +46,17 @@ router.post("/login", async (req, res) => {
   //  Now find the user by their email address
   let user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return res.status(400).json("Incorrect email or password.");
+    return res.status(400).json("Invalid");
   }
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) {
-    return res.status(400).json("Incorrect email or password.");
+    return res.status(400).json("Invalid");
   } else {
     email = req.body.email;
     const token = await jwt.sign({ email }, "PrivateKey");
     res.json(email);
     req.session.userId = user._id;
     req.session.email = user.email;
-    // res.send(email);
-
-    // res.json(req.session.email);
-
-    // res.redirect('/transaction/index');
   }
   // res.send(token);
 });
