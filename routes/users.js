@@ -46,11 +46,11 @@ router.post("/login", async (req, res) => {
   //  Now find the user by their email address
   let user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return res.status(400).json("Invalid");
+    return res.json("Invalid");
   }
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) {
-    return res.status(400).json("Invalid");
+    return res.json("Invalid");
   } else {
     email = req.body.email;
     const token = await jwt.sign({ email }, "PrivateKey");
