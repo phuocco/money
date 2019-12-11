@@ -188,34 +188,34 @@ router.post("/email/", (req, res) => {
 });
 
 //get chart
-router.get("/chart", (req, res) => {
-  let currentTime = Date.parse(new Date());
-  Transaction.aggregate([
-    {
-      $group: {
-        _id: {
-          category: "$category"
-        },
-        averageQuantity: {
-          $avg: "$amount"
-        },
-        sum: {
-          $sum: "$amount"
-        }
-      }
-    },
-    {
-      $group: {
-        _id: "$_id.category",
-        sum: {
-          $first: "$sum"
-        }
-      }
-    }
-  ])
-    .then(data => res.json(data))
-    .catch(err => console.log(err));
-});
+// router.get("/chart", (req, res) => {
+//   let currentTime = Date.parse(new Date());
+//   Transaction.aggregate([
+//     {
+//       $group: {
+//         _id: {
+//           category: "$category"
+//         },
+//         averageQuantity: {
+//           $avg: "$amount"
+//         },
+//         sum: {
+//           $sum: "$amount"
+//         }
+//       }
+//     },
+//     {
+//       $group: {
+//         _id: "$_id.category",
+//         sum: {
+//           $first: "$sum"
+//         }
+//       }
+//     }
+//   ])
+//     .then(data => res.json(data))
+//     .catch(err => console.log(err));
+// });
 
 // get category
 //TODO: done
@@ -300,6 +300,7 @@ router.get("/index", async (req, res) => {
 router.post("/chart/", (req, res) => {
   let month = parseInt(req.body.month);
   let year = parseInt(req.body.year);
+  let type = req.body.type;
   let time = new Date();
   let currentMonth = time.getMonth() + 1;
   let currentYear = time.getFullYear();
@@ -331,7 +332,7 @@ router.post("/chart/", (req, res) => {
     },
     {
       $match: {
-        type: "Expense",
+        type: type,
         month: month,
         year: year
       }
