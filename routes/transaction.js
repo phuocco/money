@@ -8,6 +8,14 @@ const moment = require("moment");
 const fetch = require("node-fetch");
 
 
+/* GET users listing. */
+router.post("/create", (req, res) => {
+  let event  = req.body.event;
+  let note = req.body.note;
+  console.log(event + " " + note);
+
+});
+
 router.get("/singleAsync", async (req, res) => {
   res.json("call api by asynctask");
 });

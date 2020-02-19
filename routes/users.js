@@ -9,7 +9,7 @@ const config = require("config");
 /* GET users listing. */
 router.get("/", function(req, res, next) {
   User.find()
-    .then(data => res.json({ users: data }))
+    .then(data => res.json(data))
     .catch(err => console.log(err));
 });
 
