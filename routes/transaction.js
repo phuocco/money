@@ -7,6 +7,13 @@ const Event = require("../models/event");
 const moment = require("moment");
 const fetch = require("node-fetch");
 
+
+router.get("/single", async (req, res) => {
+  let text = "call api";
+  res.json(text);
+});
+
+
 //get all sort time by now this month
 router.post("/", (req, res) => {
   let time = new Date();
