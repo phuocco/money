@@ -11,6 +11,7 @@ const fetch = require("node-fetch");
 router.get("/single", async (req, res) => {
   let text = "call api";
   res.json(text);
+  res.send(text);
 });
 
 
