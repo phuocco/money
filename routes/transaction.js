@@ -8,12 +8,12 @@ const moment = require("moment");
 const fetch = require("node-fetch");
 
 
-router.get("/single", async (req, res) => {
-  let text = "call api";
-  res.json(text);
-  res.send(text);
+router.get("/singleAsync", async (req, res) => {
+  res.json("call api by asynctask");
 });
-
+router.get("/singleThread", async (req, res) => {
+  res.json("call api by thread");
+});
 
 //get all sort time by now this month
 router.post("/", (req, res) => {
