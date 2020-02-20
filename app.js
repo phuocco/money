@@ -27,6 +27,8 @@ var usersRouter = require('./routes/users');
 var categoryRouter =  require('./routes/category');
 var transactionRouter =  require('./routes/transaction');
 var eventRouter =  require('./routes/event');
+var picassoRouter =  require('./routes/picasso');
+
 
 var app = express();
 
@@ -68,7 +70,7 @@ app.use('/users', usersRouter);
 app.use('/category', categoryRouter);
 app.use('/transaction',transactionRouter);
 app.use('/event',eventRouter);
-
+app.use('/picasso',picassoRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
