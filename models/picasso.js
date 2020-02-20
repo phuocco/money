@@ -4,8 +4,7 @@ var Schema = mongoose.Schema;
 
 const PicassoSchema =  new Schema({
 
-    user: String,
-
+    username: String,
     avatar: String
 })
 var Picasso = mongoose.model('Picasso', PicassoSchema);
